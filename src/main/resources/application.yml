@@ -1,0 +1,50 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: sentiment-system
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 请按本机 MySQL 修改密码
+    url: jdbc:mysql://localhost:3306/sentiment_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# ============ 系统自定义配置 ============
+sentiment:
+  jwt:
+    # JWT 密钥（生产环境务必更换为足够长的随机串）
+    secret: sentiment-system-jwt-secret-key-please-change-me-2026
+    # token 有效期（小时）
+    expire-hours: 24
+  dict:
+    # 情感词典数据文件（classpath 下路径）
+    sentiment-dict-path: data/sentiment_dict.csv
+    negation-path: data/negation.txt
+    degree-path: data/degree.txt
+    stopword-path: data/stopwords.txt
+    # 情感判定阈值：score > positive => 正向；score < negative => 负向；其余中性
+    positive-threshold: 0.5
+    negative-threshold: -0.5
+# ============ AI 问答配置（大模型接口） ============
+ai:
+  # DeepSeek API Key：前往 https://platform.deepseek.com 注册申请（新用户有免费额度）
+  api-key: sk-7a2e2af71cf448b8a288905f83aaac04
+  # 接口地址（OpenAI 兼容协议）；若换用其他服务可整体替换
+  base-url: https://api.deepseek.com
+  # 模型名：deepseek-chat（通用对话）/ deepseek-reasoner（深度推理，费用更高）
+  model: deepseek-chat
